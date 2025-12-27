@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesona Indonesia - Wisata, Kuliner & Sejarah</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary-dark: #050a14;
+            --secondary-dark: #0e1b2e;
+            --accent-color: #64ffda; /* Cyan Terang */
+            --text-primary: #e6f1ff;
+            --text-secondary: #8892b0;
+            --card-bg: rgba(20, 35, 60, 0.8);
+            --transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+        }
+
+        body.light-mode {
+            --primary-dark: #f0f4f8;
+            --secondary-dark: #ffffff;
+            --accent-color: #0056b3;
+            --text-primary: #102a43;
+            --text-secondary: #334e68;
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background-color: var(--primary-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+
+        /* --- SPLASH SCREEN (MENU MASUK AWAL) --- */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: radial-gradient(circle at center, #112240 0%, #020c1b 100%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: transform 0.8s ease-in-out;
+            padding: 20px;
+        }
+        
+        .splash-content h1 {
+            font-size: 4rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            letter-spacing: 4px;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
+        }
+
+        .enter-btn {
+            padding: 15px 50px;
+            border: 2px solid var(--accent-color);
+            background: transparent;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: var(--transition);
+            box-shadow: 0 0 15px rgba(100, 255, 218, 0.1);
+        }
+
+        .enter-btn:hover { 
+            background: var(--accent-color);
+            color: var(--primary-dark);
+            box-shadow: 0 0 30px rgba(100, 255, 218, 0.6);
+            transform: scale(1.05);
+        }
+
+        /* --- HERO HEADER SECTION (SPACE THEME) --- */
+        #hero-section {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            border-bottom: 4px solid var(--secondary-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-text {
+            z-index: 10;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: var(--accent-color);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 40px;
+            border-radius: 50px;
+            border: 2px solid var(--accent-color);
+            text-transform: uppercase;
+            box-shadow: 0 0 30px rgba(100, 255, 218, 0.2);
+            text-shadow: 2px 2px 0px #000;
+            text-align: center;
+            animation: fadeIn 3s ease, pulseText 3s infinite alternate;
+        }
+
+        .space-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+
+        /* BINTANG (Stars Only - No Meteor) */
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: twinkle linear infinite;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.3; transform: scale(0.8); }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulseText { from { box-shadow: 0 0 10px rgba(100,255,218,0.2); } to { box-shadow: 0 0 25px rgba(100,255,218,0.6); } }
+
+        /* --- NAVIGATION & CLOCK --- */
+        nav {
+            display: flex; /* Menggunakan Flexbox agar sejajar seperti desktop */
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            background: var(--secondary-dark);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            height: 80px;
+        }
+
+        .logo { 
+            font-size: 1.4rem; 
+            font-weight: 800; 
+            color: var(--accent-color); 
+            letter-spacing: 1px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .clock { 
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 1.2rem; 
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--text-primary);
+            text-shadow: 0 0 10px rgba(100, 255, 218, 0.4);
+            background: rgba(0,0,0,0.3);
+            padding: 5px 15px;
+            border-radius: 5px;
+            border: 1px solid rgba(100, 255, 218, 0.2);
+        }
+
+        .mode-toggle { 
+            cursor: pointer; 
+            font-size: 1.4rem; 
+            padding: 10px;
+            transition: transform 0.3s;
+        }
+        .mode-toggle:hover { transform: rotate(20deg); color: var(--accent-color); }
+
+        /* --- MAIN CONTENT LAYOUT --- */
+        .container { padding: 40px 5%; max-width: 1400px; margin: 0 auto; }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin: 60px 0 40px;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .section-title::after {
+            content: ''; display: block; width: 80px; height: 4px;
+            background: var(--accent-color); margin: 15px auto; border-radius: 2px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        /* CARD STYLE (Dipertahankan bentuknya) */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transition: var(--transition);
+            opacity: 0; transform: translateY(30px);
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card.visible { opacity: 1; transform: translateY(0); }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+
+        .card-image-container {
+            width: 100%;
+            height: 200px;
+            background-color: #0f172a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .card:hover .card-image-container img { transform: scale(1.1); }
+
+        .card-content { padding: 20px; display: flex; flex-direction: column; flex-grow: 1;}
+
+        .card h3 { 
+            color: var(--text-primary); 
+            margin-bottom: 5px; 
+            font-size: 1.4rem;
+        }
+        
+        .card-loc { 
+            color: var(--accent-color); 
+            font-size: 0.9rem; 
+            margin-bottom: 15px; 
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .more-info {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .more-info.open { max-height: 600px; }
+        
+        .info-content {
+            padding: 15px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .toggle-btn {
+            background: transparent; 
+            border: 1px solid var(--text-secondary); 
+            color: var(--text-secondary);
+            padding: 8px 0;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer; 
+            margin-top: auto; 
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .toggle-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+        /* BUTTONS */
+        .load-more-container { text-align: center; margin-top: 40px; }
+        .btn-main {
+            padding: 12px 30px;
+            background: var(--accent-color);
+            color: var(--primary-dark);
+            border: none; border-radius: 5px;
+            cursor: pointer; font-weight: bold; font-size: 1rem;
+            transition: var(--transition);
+        }
+        .btn-main:hover { opacity: 0.8; transform: translateY(-2px); }
+
+        /* --- MEDIA QUERIES UNTUK ANDROID/MOBILE --- */
+        @media (max-width: 900px) { 
+            .grid-container { grid-template-columns: repeat(2, 1fr); } 
+        }
+
+        @media (max-width: 600px) { 
+            /* Grid tetap responsif 1 kolom agar konten terbaca enak, tapi layout lainnya disesuaikan */
+            .grid-container { grid-template-columns: 1fr; gap: 20px;} 
+            
+            /* Navbar tetap Horizontal (Desktop feel) */
+            nav { 
+                height: 70px; 
+                padding: 0 20px;
+                /* Memastikan tidak menumpuk ke bawah */
+                flex-direction: row; 
+            }
+            
+            .logo { font-size: 1.1rem; }
+            .clock { font-size: 0.9rem; padding: 3px 8px; }
+
+            /* Splash Screen Font Adjustment */
+            .splash-content h1 { font-size: 2.5rem; letter-spacing: 2px; }
+            .splash-content p { font-size: 1rem; padding: 0 20px; }
+            .enter-btn { padding: 12px 35px; font-size: 1rem; }
+
+            /* Hero Section Adjustment */
+            #hero-section { height: 300px; }
+            .hero-text { 
+                font-size: 1.2rem; 
+                padding: 10px 20px; 
+                border-width: 1px;
+                width: 90%; /* Agar tidak terlalu lebar di HP */
+            }
+
+            .section-title { font-size: 1.8rem; margin: 40px 0 20px; }
+        }
+
+        /* --- CHATBOT --- */
+        #chatbot { position: fixed; bottom: 30px; right: 30px; z-index: 1000; }
+        .chat-icon {
+            width: 60px; height: 60px; background: var(--accent-color);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 24px; color: var(--primary-dark); cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+        .chat-icon:hover { transform: scale(1.1) rotate(10deg); }
+        
+        .chat-window {
+            position: absolute; bottom: 80px; right: 0;
+            width: 300px; height: 400px;
+            background: var(--secondary-dark);
+            border-radius: 15px; border: 1px solid var(--accent-color);
+            display: none; flex-direction: column; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .chat-header { background: var(--accent-color); padding: 15px; color: var(--primary-dark); font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; color: var(--text-primary); font-size: 0.9rem; background: rgba(0,0,0,0.2); }
+        .chat-input { display: flex; border-top: 1px solid rgba(255,255,255,0.1); padding: 10px; background: var(--secondary-dark); }
+        .chat-input input { flex: 1; padding: 10px; border: none; outline: none; background: rgba(255,255,255,0.05); color: white; border-radius: 5px; margin-right: 5px;}
+        .chat-input button { padding: 0 15px; background: var(--accent-color); border: none; cursor: pointer; border-radius: 5px; color: var(--primary-dark);}
+
+        footer { text-align: center; padding: 40px 20px; color: var(--text-secondary); border-top: 1px solid rgba(255,255,255,0.05); margin-top: 80px; }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <div class="splash-content">
+            <h1>NUSANTARA</h1>
+            <p style="color:var(--text-secondary); margin-bottom: 40px; line-height: 1.5;">Menjelajah Keajaiban Indonesia<br>Dari Sabang sampai Merauke</p>
+            <button class="enter-btn" onclick="enterSite()">MASUK SEKARANG</button>
+        </div>
+    </div>
+
+    <div id="main-content" style="display: none;">
+        
+        <div id="hero-section">
+            <div class="space-overlay" id="space-effect"></div>
+            <div class="hero-text">Welcome to Indonesia</div>
+        </div>
+
+        <nav>
+            <div class="logo">INDONESIAKU</div>
+            <div class="nav-right">
+                <div class="clock" id="digital-clock">00:00:00</div>
+                <div class="mode-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <h2 class="section-title">Destinasi Wisata</h2>
+            <div class="grid-container" id="wisata-grid"></div>
+            <div class="load-more-container">
+                <button class="btn-main" onclick="toggleShow('wisata')">Tampilkan Semua</button>
+            </div>
+
+            <h2 class="section-title">Kuliner Nusantara</h2>
+            <div class="grid-container" id="kuliner-grid"></div>
+            <div class="load-more-container">
+                <button class="btn-main" onclick="toggleShow('kuliner')">Tampilkan Semua</button>
+            </div>
+
+            <h2 class="section-title">Sejarah</h2>
+            <div class="grid-container" id="sejarah-grid"></div>
+            <div class="load-more-container">
+                <button class="btn-main" onclick="toggleShow('sejarah')">Tampilkan Semua</button>
+            </div>
+        </div>
+
+        <div id="chatbot">
+            <div class="chat-window" id="chat-window">
+                <div class="chat-header">
+                    <span>Asisten Virtual</span>
+                    <span onclick="toggleChat()" style="cursor:pointer;"><i class="fas fa-times"></i></span>
+                </div>
+                <div class="chat-body" id="chat-body">
+                    <p style="background:rgba(255,255,255,0.1); padding:8px; border-radius:5px;">Halo! Saya siap menemani perjalanan virtual Anda. Tanyakan tentang wisata atau kuliner!</p>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="user-input" placeholder="Ketik pesan..." onkeypress="handleEnter(event)">
+                    <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+            <div class="chat-icon" onclick="toggleChat()">
+                <i class="fas fa-comment-dots"></i>
+            </div>
+        </div>
+
+        <footer>
+            &copy; 2025 Pesona Indonesia. Dibuat dengan Teknologi Web Modern.
+        </footer>
+    </div>
+
+    <script>
+        // --- DATA OBJECTS (Data tetap sama) ---
+        const wisataData = [
+            {name: "Gunung Bromo", loc: "Jawa Timur", info: "Gunung Bromo menawarkan pemandangan matahari terbit yang spektakuler dan kawah aktif yang bisa dicapai dengan mendaki tangga. <br><strong>Jam Buka:</strong> 24 Jam<br><strong>Tiket:</strong> Rp 30.000 - Rp 300.000 (WNA)<br><strong>Aktivitas:</strong> Jeep Tour, Berkuda, Hiking."},
+            {name: "Candi Borobudur", loc: "Jawa Tengah", info: "Candi Buddha terbesar di dunia yang dibangun pada abad ke-9. Memiliki relief yang menceritakan kehidupan Buddha dan 72 stupa terbuka.<br><strong>Status:</strong> Warisan Dunia UNESCO<br><strong>Tiket:</strong> Mulai Rp 50.000"},
+            {name: "Raja Ampat Islands", loc: "Papua Barat", info: "Gugusan kepulauan karst dengan keanekaragaman hayati laut tertinggi di dunia. Surga bagi penyelam.<br><strong>Highlight:</strong> Wayag, Piaynemo, Misool.<br><strong>Akses:</strong> Pesawat ke Sorong lalu Kapal Feri."},
+            {name: "Komodo Island", loc: "NTT", info: "Satu-satunya tempat di dunia di mana Anda bisa melihat Komodo di habitat aslinya. Termasuk Pink Beach yang memukau.<br><strong>Wajib:</strong> Menggunakan Guide Ranger demi keselamatan."},
+            {name: "Danau Toba", loc: "Sumatera Utara", info: "Danau vulkanik terbesar di Asia Tenggara dengan Pulau Samosir di tengahnya. Terbentuk dari letusan supervulkan ribuan tahun lalu.<br><strong>Budaya:</strong> Kain Ulos dan Tarian Sigale-gale."},
+            {name: "Labuan Bajo Scenery", loc: "NTT", info: "Kota pelabuhan kecil yang menjadi gerbang utama menuju Taman Nasional Komodo. Terkenal dengan pemandangan sunset dari bukit."},
+            {name: "Pura Tanah Lot", loc: "Bali", info: "Pura laut ikonik yang terletak di atas batu karang besar. Sangat indah saat matahari terbenam.<br><strong>Mitos:</strong> Dijaga oleh ular suci di gua karang."},
+            {name: "Kawah Ijen Blue Fire", loc: "Jawa Timur", info: "Terkenal dengan fenomena 'Blue Fire' atau api biru yang hanya ada dua di dunia. Memiliki kawah asam terbesar.<br><strong>Waktu Terbaik:</strong> Dini hari (01.00 - 03.00 WIB)."},
+            {name: "Tana Toraja House", loc: "Sulawesi Selatan", info: "Dikenal dengan upacara pemakaman Rambu Solo yang megah dan kuburan batu di tebing.<br><strong>Arsitektur:</strong> Rumah adat Tongkonan yang unik."},
+            {name: "Nusa Penida Beach", loc: "Bali", info: "Pulau di sebelah tenggara Bali dengan tebing-tebing curam dan pantai pasir putih.<br><strong>Spot:</strong> Kelingking Beach, Angel's Billabong, Broken Beach."},
+            {name: "Derawan Islands", loc: "Kalimantan Timur", info: "Habitat penyu hijau dan ubur-ubur tidak menyengat di Danau Kakaban.<br><strong>Aktivitas:</strong> Berenang bersama hiu paus."},
+            {name: "Mount Rinjani", loc: "Lombok", info: "Gunung berapi tertinggi kedua di Indonesia dengan Danau Segara Anak di kalderanya. Trekking favorit pendaki dunia."},
+            {name: "Candi Prambanan", loc: "Yogyakarta", info: "Kompleks candi Hindu terbesar di Indonesia, didedikasikan untuk Trimurti. Terkenal dengan sendratari Ramayana."},
+            {name: "Bunaken Marine Park", loc: "Sulawesi Utara", info: "Taman nasional laut pertama di Indonesia dengan dinding karang (wall diving) yang curam dan dalam."},
+            {name: "Wae Rebo Village", loc: "NTT", info: "Desa adat terpencil di pegunungan Manggarai dengan rumah adat Mbaru Niang berbentuk kerucut.<br><strong>Julukan:</strong> Negeri di Atas Awan."}
+        ];
+
+        const kulinerData = [
+            {name: "Rendang Beef", loc: "Sumatera Barat", info: "Daging sapi yang dimasak perlahan dengan santan dan campuran rempah-rempah khas selama berjam-jam hingga kering dan berwarna hitam. <br><strong>Penghargaan:</strong> Makanan Terlezat di Dunia versi CNN."},
+            {name: "Nasi Goreng Indonesia", loc: "Nasional", info: "Nasi yang digoreng dengan bumbu bawang, kecap manis, dan cabai. <br><strong>Variasi:</strong> Nasi Goreng Kambing, Seafood, Gila, Jawa."},
+            {name: "Sate Ayam Madura", loc: "Madura", info: "Potongan daging ayam yang ditusuk lidi, dibakar di atas arang, lalu disiram bumbu kacang kental dan kecap."},
+            {name: "Soto Betawi Food", loc: "Jakarta", info: "Soto dengan kuah creamy yang terbuat dari campuran santan dan susu sapi, berisi daging sapi dan jeroan.<br><strong>Pelengkap:</strong> Emping dan acar."},
+            {name: "Gudeg Jogja", loc: "Yogyakarta", info: "Sayur nangka muda yang dimasak dengan gula merah dan santan selama berjam-jam. Rasanya manis legit.<br><strong>Jenis:</strong> Gudeg Basah dan Gudeg Kering."},
+            {name: "Pempek Palembang", loc: "Palembang", info: "Kue ikan yang terbuat dari daging ikan tenggiri dan tepung sagu. Disajikan dengan kuah Cuko yang pedas, asam, manis."},
+            {name: "Rawon Soup", loc: "Jawa Timur", info: "Sup daging sapi berkuah hitam pekat yang unik. Warna hitam berasal dari buah Kluwek.<br><strong>Pasangan:</strong> Telur asin dan tauge pendek."},
+            {name: "Bakso Meatball", loc: "Nasional", info: "Bola daging giling (sapi/ayam/ikan) yang kenyal, disajikan dengan kuah kaldu panas dan mie."},
+            {name: "Babi Guling Bali", loc: "Bali", info: "Babi utuh yang perutnya diisi bumbu base genep dan sayuran, lalu dipanggang memutar di atas api.<br><strong>Ciri Khas:</strong> Kulit yang sangat renyah."},
+            {name: "Coto Makassar", loc: "Sulawesi Selatan", info: "Soto yang berisi jeroan sapi yang direbus lama, disajikan dengan kuah kacang tanah.<br><strong>Teman Makan:</strong> Buras atau Ketupat."},
+            {name: "Ayam Taliwang", loc: "Lombok", info: "Ayam kampung muda yang dibakar dengan bumbu cabai super pedas khas Lombok. Disajikan dengan Plecing Kangkung."},
+            {name: "Papeda Ikan Kuah Kuning", loc: "Papua/Maluku", info: "Makanan pokok dari sagu yang bertekstur lengket seperti lem. Disajikan dengan Ikan Kuah Kuning yang segar."},
+            {name: "Mie Aceh", loc: "Aceh", info: "Mie kuning tebal dengan bumbu kari yang sangat kuat dan pedas. Bisa disajikan goreng, tumis, atau berkuah."},
+            {name: "Gado gado Food", loc: "Jakarta", info: "Salad sayuran rebus (bayam, kacang panjang, tauge) disiram bumbu kacang.<br><strong>Julukan:</strong> Salad of Indonesia."},
+            {name: "Sate Lilit Bali", loc: "Bali", info: "Daging cincang (ikan/ayam) dicampur parutan kelapa dan bumbu, lalu dililitkan pada batang serai tebal."}
+        ];
+
+        const sejarahData = [
+            {name: "Proklamasi Kemerdekaan Indonesia", loc: "Jakarta", info: "Puncak perjuangan bangsa Indonesia. Soekarno didampingi Hatta membacakan teks proklamasi di Jl. Pegangsaan Timur No. 56.<br><strong>Tanggal:</strong> 17 Agustus 1945."},
+            {name: "Majapahit Kingdom", loc: "Jawa Timur", info: "Kerajaan Hindu-Buddha terbesar yang pernah menguasai Nusantara (1293-1500 M).<br><strong>Tokoh:</strong> Hayam Wuruk dan Patih Gajah Mada dengan Sumpah Palapa."},
+            {name: "Sriwijaya Kingdom", loc: "Palembang", info: "Kerajaan maritim Buddha terbesar (650-1377 M) yang menguasai jalur perdagangan Selat Malaka.<br><strong>Peninggalan:</strong> Candi Muara Takus."},
+            {name: "Sumpah Pemuda 1928", loc: "Jakarta", info: "Kongres Pemuda II pada 28 Oktober 1928 yang melahirkan ikrar: Satu Tanah Air, Satu Bangsa, dan Satu Bahasa Indonesia."},
+            {name: "Prince Diponegoro", loc: "Jawa", info: "Perang besar (1825-1830) antara Pangeran Diponegoro melawan pemerintah kolonial Belanda. Menyebabkan Belanda bangkrut."},
+            {name: "Bandung Lautan Api", loc: "Jawa Barat", info: "Peristiwa pembakaran kota Bandung oleh warga dan tentara agar fasilitas tidak digunakan oleh Sekutu (1946)."},
+            {name: "Konferensi Meja Bundar", loc: "Den Haag", info: "Konferensi Meja Bundar (1949) adalah momen di mana Belanda akhirnya mengakui kedaulatan Indonesia secara penuh."},
+            {name: "Battle of Surabaya 1945", loc: "Jawa Timur", info: "Pertempuran sengit 10 November 1945. Bung Tomo membakar semangat arek-arek Suroboyo. Diperingati sebagai Hari Pahlawan."},
+            {name: "Kutai Kingdom Yupa", loc: "Kalimantan", info: "Kerajaan Hindu tertua di Indonesia (Abad ke-4 M). Buktinya adalah 7 buah Yupa (tugu batu)."},
+            {name: "Monumen Pancasila Sakti", loc: "Jakarta", info: "Tragedi nasional pembunuhan para Jenderal TNI AD pada malam 30 September 1965 yang mengubah arah politik Indonesia."},
+            {name: "Samudera Pasai Kingdom", loc: "Aceh", info: "Kerajaan Islam pertama di Indonesia. Menjadi pusat penyebaran agama Islam dan perdagangan lada."},
+            {name: "VOC Ship Indonesia", loc: "Batavia", info: "Vereenigde Oostindische Compagnie, kongsi dagang Belanda yang memonopoli rempah-rempah dan menjajah secara ekonomi."},
+            {name: "Dutch East Indies School", loc: "Hindia Belanda", info: "Kebijakan 'Balas Budi' (Edukasi, Irigasi, Transmigrasi) yang justru melahirkan kaum intelektual pergerakan nasional."},
+            {name: "Serangan Umum 1 Maret", loc: "Yogyakarta", info: "Serangan besar-besaran TNI di pagi buta untuk membuktikan kepada dunia (PBB) bahwa Indonesia dan TNI masih ada."},
+            {name: "Soekarno Speech", loc: "Jakarta", info: "Keputusan Presiden Soekarno 5 Juli 1959 untuk membubarkan Konstituante dan kembali ke UUD 1945."}
+        ];
+
+        // --- STATE VARIABLES ---
+        let expanded = { wisata: false, kuliner: false, sejarah: false };
+        const initialShow = 6; 
+
+        // --- FUNCTIONS ---
+
+        function enterSite() {
+            document.getElementById('splash-screen').style.transform = 'translateY(-100%)';
+            document.getElementById('main-content').style.display = 'block';
+            initApp();
+        }
+
+        function initApp() {
+            renderCards('wisata', wisataData);
+            renderCards('kuliner', kulinerData);
+            renderCards('sejarah', sejarahData);
+            updateClock();
+            setupSpaceEnvironment();
+            setInterval(updateClock, 1000);
+            setupObserver();
+        }
+
+        function renderCards(type, dataArray) {
+            const grid = document.getElementById(`${type}-grid`);
+            grid.innerHTML = '';
+            
+            const limit = expanded[type] ? dataArray.length : initialShow;
+
+            dataArray.forEach((item, index) => {
+                if (index < limit) {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    
+                    const keyword = encodeURIComponent(item.name);
+                    const imgUrl = `https://tse2.mm.bing.net/th?q=${keyword}&w=400&h=250&c=7&rs=1&p=0`;
+
+                    card.innerHTML = `
+                        <div class="card-image-container">
+                            <img src="${imgUrl}" alt="${item.name}" loading="lazy" onerror="this.src='https://placehold.co/400x250/233554/FFF?text=Image+Not+Found'">
+                        </div>
+                        <div class="card-content">
+                            <h3>${item.name.replace(/ Beef| Food| Soup| Meatball| Kingdom/g, "")}</h3>
+                            <p class="card-loc"><i class="fas fa-map-marker-alt"></i> ${item.loc}</p>
+                            <button class="toggle-btn" onclick="toggleInfo(this)">Lihat Detail Lengkap</button>
+                            <div class="more-info">
+                                <div class="info-content">${item.info}</div>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+            setupObserver();
+        }
+
+        function toggleShow(type) {
+            expanded[type] = !expanded[type];
+            let data = (type === 'wisata') ? wisataData : (type === 'kuliner') ? kulinerData : sejarahData;
+            renderCards(type, data);
+            
+            const btn = document.querySelector(`button[onclick="toggleShow('${type}')"]`);
+            btn.innerText = expanded[type] ? "Sembunyikan" : "Tampilkan Semua";
+        }
+
+        function toggleInfo(btn) {
+            const infoDiv = btn.nextElementSibling;
+            infoDiv.classList.toggle('open');
+            btn.innerText = infoDiv.classList.contains('open') ? "Tutup Detail" : "Lihat Detail Lengkap";
+        }
+
+        function setupObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.card').forEach(card => observer.observe(card));
+        }
+
+        // --- SPACE BACKGROUND ONLY (NO METEORS) ---
+        function setupSpaceEnvironment() {
+            const container = document.getElementById('space-effect');
+            createStars(container);
+            // Fungsi meteor dihapus
+        }
+
+        function createStars(container) {
+            for(let i=0; i<100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                const size = Math.random() * 3 + 1;
+                const delay = Math.random() * 5;
+                const duration = Math.random() * 3 + 2;
+
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDelay = `${delay}s`;
+                star.style.animationDuration = `${duration}s`;
+
+                container.appendChild(star);
+            }
+        }
+
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('id-ID', { hour12: false });
+            document.getElementById('digital-clock').innerText = timeString;
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const icon = document.getElementById('theme-icon');
+            if (document.body.classList.contains('light-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        }
+
+        // CHATBOT
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            win.style.display = win.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim().toLowerCase();
+            const chatBody = document.getElementById('chat-body');
+
+            if (text === "") return;
+
+            chatBody.innerHTML += `<p style="text-align:right; margin:5px 0;"><strong>Anda:</strong> ${input.value}</p>`;
+
+            let response = "Maaf, saya belum mengerti. Coba tanya tentang 'wisata', 'makanan', atau 'sejarah'.";
+            
+            if (text.includes("halo") || text.includes("hai")) {
+                response = "Halo! Senang bertemu Anda. Mau jalan-jalan kemana hari ini?";
+            } else if (text.includes("kabar")) {
+                response = "Saya hanyalah program komputer, tapi sistem saya berjalan 100% lancar!";
+            } else if (text.includes("wisata") || text.includes("liburan")) {
+                response = "Untuk wisata, saya sarankan Cek 'Gunung Bromo' atau 'Raja Ampat' di daftar atas.";
+            } else if (text.includes("makanan") || text.includes("lapar")) {
+                response = "Rendang adalah pilihan terbaik! Tapi Sate Ayam juga enak.";
+            } else if (text.includes("sejarah")) {
+                response = "Indonesia punya sejarah hebat. Majapahit dan Sriwijaya adalah bukti kejayaan masa lalu.";
+            } else if (text.includes("jam")) {
+                response = "Sekarang pukul " + new Date().toLocaleTimeString('id-ID');
+            }
+
+            setTimeout(() => {
+                chatBody.innerHTML += `<p style="text-align:left; margin:5px 0; color:var(--accent-color);"><strong>Bot:</strong> ${response}</p>`;
+                chatBody.scrollTop = chatBody.scrollHeight;
+            }, 500);
+
+            input.value = "";
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+    </script>
+</body>
+</html>
